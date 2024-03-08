@@ -1,0 +1,105 @@
+package com.ups.poo.controller;
+
+import com.ups.poo.service.AuthorService;
+import com.ups.poo.service.BookService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+@@ -9,14 +10,22 @@
+public class TemplateController {
+
+    private final AuthorService authorService;
+    private final BookService bookService;
+
+    public TemplateController(AuthorService authorService) {
+    public TemplateController(AuthorService authorService, BookService bookService) {
+        this.authorService = authorService;
+        this.bookService = bookService;
+    }
+
+    @GetMapping("/authors")
+    public String getAuthors(Model model) {
+        model.addAttribute("authors", authorService.findAll());
+        return "authors/list";
+    }
+
+    @GetMapping("/books")
+    public String getBooks(Model model) {
+        model.addAttribute("bookList", bookService.findAll());
+        return "books/book";
+    }
+}
+  5 changes: 5 additions & 0 deletions5  
+src/main/java/com/ups/poo/dto/AuthorDTO.java
+@@ -27,4 +27,9 @@ public String getLastName() {
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return this.name + " " + this.lastName;
+    }
+}
+  1 change: 1 addition & 0 deletions1  
+src/main/resources/templates/authors/list.html
+@@ -22,6 +22,7 @@
+        tr {
+          text-align: center;
+          font-weight: bold;
+          background-color: white;
+        }
+    </style>
+</head>
+ 49 changes: 49 additions & 0 deletions49  
+src/main/resources/templates/books/book.html
+@@ -0,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Books</title>
+
+    <style>
+        body{
+          background-color: lightyellow;
+        }
+
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+
+        tr:first-child {
+          background-color: lightskyblue;
+          color: white;
+        }
+
+        tr {
+          text-align: center;
+          font-weight: bold;
+          background-color: white;
+        }
+
+        tr:hover{
+         box-shadow: 0px 2px 18px 0px rgba(0,0,0,0.5); cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Books List</h1>
+    <br>
+    <table width="60%">
+        <tr>
+            <th>Title</th>
+            <th>Editorial</th>
+            <th>Author</th>
+        </tr>
+        <tr th:each="bo: ${bookList}">
+            <th th:text="${bo.title}"></th>
+            <th th:text="${bo.editorial}"></th>
+            <th th:text="${bo.authorDTO.name} + ' ' + ${bo.authorDTO.lastName}"></th>
+        </tr>
+    </table>
+</body>
+</html>
