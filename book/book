@@ -1,0 +1,78 @@
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Book {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String title;
+    private String editorial; // Cambiado de Publisher a Editorial
+
+    // Getters y setters
+}
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Libros</title>
+</head>
+<body>
+    <h1>Lista de Libros</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Editorial</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.title}"></td>
+                <td th:text="${book.editorial}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class TemplateController {
+
+    private final BookRepository bookRepository;
+
+    public TemplateController(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+    @GetMapping("/books")
+    public String getBooks(Model model) {
+        model.addAttribute("books", bookRepository.findAll());
+        return "books/list";
+    }
+}
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class TemplateController {
+
+    private final BookRepository bookRepository;
+
+    public TemplateController(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    @GetMapping("/books")
+    public String getBooks(Model model) {
+        model.addAttribute("books", bookRepository.findAll());
+        return "books/list";
+    }
+}
